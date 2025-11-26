@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightAutoSidebar from "starlight-auto-sidebar";
+import starlightHeadingBadges from "starlight-heading-badges";
 
 // https://astro.build/config
 export default defineConfig({
@@ -33,7 +34,7 @@ export default defineConfig({
           autogenerate: { directory: "c/library" },
         },
       ],
-      plugins: [starlightAutoSidebar()],
+      plugins: [starlightAutoSidebar(), starlightHeadingBadges()],
       customCss: ["./src/styles/custom.css"],
     }),
   ],
