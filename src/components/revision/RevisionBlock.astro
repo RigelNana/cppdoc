@@ -2,14 +2,21 @@
 import type { RevisionInfo } from "./types";
 import RevisionTags from "./RevisionTags.astro";
 
+type LayoutDirection = "h" | "v";
+
 interface Props extends RevisionInfo {
   noborder?: boolean;
+  dir?: LayoutDirection;
 }
 
 const { noborder } = Astro.props;
+const dir = Astro.props.dir ?? "h";
+
+const horizontal = dir === "h";
+const vertical = dir === "v";
 ---
 
-<div class:list={["revision", { noborder }]}>
+<div class:list={["revision", { noborder, horizontal, vertical }]}>
   <div class="revision-content">
     <slot />
   </div>
@@ -22,7 +29,6 @@ const { noborder } = Astro.props;
   .revision {
     display: flex;
     align-items: center;
-    column-gap: 1em;
   }
 
   .revision:not(.noborder) {
@@ -33,19 +39,24 @@ const { noborder } = Astro.props;
     padding-bottom: calc(var(--sl-content-gap-y) * 0.25);
   }
 
-  .revision > .revision-content {
+  .revision .revision-tags {
+    margin: 0;
+  }
+
+  .revision.horizontal {
+    column-gap: 1em;
+  }
+
+  .revision.horizontal > .revision-content {
     flex-grow: 1;
   }
 
-  .revision > .revision-tags {
+  .revision.horizontal > .revision-tags {
     flex-shrink: 0;
     flex-grow: 0;
-    margin-top: 0;
   }
 
-  .revision .revision-tag {
-    font-size: var(--cppdoc-font-size-revision);
-    color: var(--cppdoc-color-revision);
-    margin: 0;
+  .revision.vertical {
+    flex-direction: column;
   }
 </style>

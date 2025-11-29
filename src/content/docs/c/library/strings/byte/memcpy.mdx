@@ -7,7 +7,7 @@ cppdoc:
 import Behavior from "@components/Behavior.astro";
 import { CHeader } from "@components/header";
 import { Decl, DeclDoc } from "@components/decl-doc";
-import { Desc, DescList } from "@src/components/desc-list";
+import { Desc, DescItem, DescList } from "@src/components/desc-list";
 import Missing from "@components/Missing.astro";
 import { ParamDoc, ParamDocList } from "@components/param-doc";
 import { Revision, RevisionBlock } from "@components/revision";
@@ -155,3 +155,34 @@ dst = "\0\0\0\0\0yxyxy", r = 22
   - 7.21.2.1 The memcpy function (p: 325) 
 - C89/C90 standard (ISO/IEC 9899:1990): 
   - 4.11.2.1 The memcpy function
+
+## See also
+
+<DescList>
+  <Desc kind="function">
+    <DescItem slot="item">
+      <Revision noborder since="C23"><Missing>`memccpy`</Missing></Revision>
+    </DescItem>
+    copies one buffer to another, stopping after the specified delimiter
+  </Desc>
+
+  <Desc kind="function">
+    <DescItem slot="item">
+      <Missing>`memmove`</Missing>
+    </DescItem>
+    <DescItem slot="item">
+      <RevisionBlock noborder since="C11" dir="v"><Missing>`memmove_s`</Missing></RevisionBlock>
+    </DescItem>
+    moves one buffer to another
+  </Desc>
+
+  <Desc kind="function">
+    <DescItem slot="item">
+      <RevisionBlock noborder since="C95" dir="v"><Missing>`wmemcpy`</Missing></RevisionBlock>
+    </DescItem>
+    <DescItem slot="item">
+      <RevisionBlock noborder since="C11" dir="v"><Missing>`wmemcpy_s`</Missing></RevisionBlock>
+    </DescItem>
+    copies a certain amount of wide characters between two non-overlapping arrays
+  </Desc>
+</DescList>

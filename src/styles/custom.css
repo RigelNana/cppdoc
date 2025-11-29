@@ -6,6 +6,9 @@
   --cppdoc-color-revision: var(--sl-color-green);
   --cppdoc-font-size-revision: 0.8em;
 
+  --cppdoc-color-desc-kind: var(--sl-color-green);
+  --cppdoc-font-size-desc-kind: 0.8em;
+
   --cppdoc-color-missing-link: #cc6633;
   --cppdoc-color-well-def: var(--sl-color-green);
   --cppdoc-color-impl-def: var(--sl-color-blue);
