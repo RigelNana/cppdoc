@@ -1,4 +1,4 @@
-# cppdoc
+# CppDoc
 
 An open documentation for the C/C++ programming languages and their standard libraries.
 

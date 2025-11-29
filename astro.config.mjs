@@ -10,7 +10,7 @@ import starlightHeadingBadges from "starlight-heading-badges";
 export default defineConfig({
   integrations: [
     starlight({
-      title: "cppdoc",
+      title: "CppDoc",
       social: [
         {
           icon: "github",
@@ -35,6 +35,10 @@ export default defineConfig({
           label: "C Library Reference",
           autogenerate: { directory: "c/library" },
         },
+        {
+          label: "CppDoc Development Guide",
+          autogenerate: { directory: "development" },
+        }
       ],
       locales: {
         root: {
