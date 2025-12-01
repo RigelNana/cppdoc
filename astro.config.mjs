@@ -1,4 +1,5 @@
 // @ts-check
+import process from "process";
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightUtils from "@lorenzo_lewis/starlight-utils";
@@ -7,6 +8,8 @@ import starlightHeadingBadges from "starlight-heading-badges";
 
 // https://astro.build/config
 export default defineConfig({
+  site: process.env.CPPDOC_SITE,
+  base: process.env.CPPDOC_BASE,
   integrations: [
     starlight({
       title: "CppDoc",
