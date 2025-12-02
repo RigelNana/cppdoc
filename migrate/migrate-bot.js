@@ -43,7 +43,7 @@ async function retry(fn, retries = 3, delay = 1000) {
 
 
 function extractLink(title) {
-  const urlRegex = /https?:\/\/en\.cppreference\.com\/w\/[^\s]+/g;
+  const urlRegex = /cppreference\.com\/w\/[^\s]+/g;
   const match = title.match(urlRegex);
   return match ? match[0] : null;
 }
