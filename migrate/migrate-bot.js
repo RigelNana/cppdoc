@@ -41,7 +41,6 @@ async function retry(fn, retries = 3, delay = 1000) {
   throw lastError;
 }
 
-
 function extractLink(title) {
   const urlRegex = /https?:\/\/.*?cppreference\.com\/w\/[^\s]+/g;
   const match = title.match(urlRegex);
@@ -123,49 +122,67 @@ ${html}
   console.log("Raw content:", content);
 
   if (content.includes("```mdx")) {
-    content = content.slice(content.indexOf("```mdx") + 6, content.lastIndexOf("```")).trim();
+    content = content
+      .slice(content.indexOf("```mdx") + 6, content.lastIndexOf("```"))
+      .trim();
   }
 
   // Auto Import
   const components = [
-    'Behavior',
-    'Decl',
-    'DeclDoc',
-    'DescList',
-    'Desc',
-    'ParamDocList',
-    'ParamDoc',
-    'DocLink',
-    'CHeader',
-    'CppHeader',
-    'FeatureTestMacro',
-    'FeatureTestMacroValue',
-    'DR',
-    'DRList',
-    'Revision',
-    'RevisionBlock',
-    'AutoCollapse',
-    'FlexTable',
-    'WG21PaperLink',
-  ]
+    "Behavior",
+    "Decl",
+    "DeclDoc",
+    "DescList",
+    "Desc",
+    "ParamDocList",
+    "ParamDoc",
+    "DocLink",
+    "CHeader",
+    "CppHeader",
+    "FeatureTestMacro",
+    "FeatureTestMacroValue",
+    "DR",
+    "DRList",
+    "Revision",
+    "RevisionBlock",
+    "AutoCollapse",
+    "FlexTable",
+    "WG21PaperLink",
+  ];
 
-  const usedComponents = components.filter((comp) => content.includes(`<${comp} `) || content.includes(`<${comp}>`));
+  const usedComponents = components.filter(
+    (comp) => content.includes(`<${comp} `) || content.includes(`<${comp}>`),
+  );
 
   // Remove all existing import statements
-  content = content.split('\n').filter(line => !line.startsWith('import ')).join('\n');
+  content = content
+    .split("\n")
+    .filter((line) => !line.startsWith("import "))
+    .join("\n");
 
   // Sort used components alphabetically
   usedComponents.sort();
 
   if (usedComponents.length > 0) {
-    const importStatements = `import { ${usedComponents.join(', ')} } from '@components/index';\n\n`;
+    const importStatements = `import { ${usedComponents.join(", ")} } from '@components/index';\n\n`;
     content = importStatements + content;
   }
 
   // Verify content
-  let normalElements = ["<div", "<section", "<span", "<table", "<thead", "<tbody", "<tr", "<td", "<th"], normalElementsCount = 0;
+  let normalElements = [
+    "<div",
+    "<section",
+    "<span",
+    "<table",
+    "<thead",
+    "<tbody",
+    "<tr",
+    "<td",
+    "<th",
+  ],
+    normalElementsCount = 0;
   for (const elem of normalElements) {
-    normalElementsCount += (content.match(new RegExp(elem, 'g')) || []).length;
+    normalElementsCount += (content.match(new RegExp(elem, "g")) || []).length;
   }
 
   console.log(`Normal HTML elements count: ${normalElementsCount}`);
@@ -177,20 +194,20 @@ ${html}
   return content;
 }
 
-function getLocalPath(url) {
-  // https://en.cppreference.com/w/cpp/comments.html -> src/content/docs/cpp/comments.mdx
+// https://cppreference.com/w/cpp/comments  => src/content/docs/cpp/comments.mdx
+function getRelativePath(url) {
   const match = url.match(/https?:\/\/.*?cppreference\.com\/w\/(.+)\.html$/);
   if (!match) {
     throw new Error(`无法从URL解析路径: ${url}`);
   }
   const relative = match[1]; // "cpp/comments"
+  return `src/content/docs/${relative}.mdx`;
+}
+
+function getLocalPath(url) {
   return path.join(
     __dirname,
-    "..",
-    "src",
-    "content",
-    "docs",
-    `${relative}.mdx`,
+    "..", getRelativePath(url)
   );
 }
 
@@ -207,12 +224,11 @@ description: Auto‑generated from cppreference
 
 async function createPullRequest(issue, filePath, url) {
   const branchName = `migrate/${issue.number}-${Date.now().toString(36)}`;
-  const commitMessage = `Migrate ${url}`;
-  const prTitle = `feat: migrate ${url.split('/w/').pop().replace('.html', '')} from cppref [#${issue.number}]`;
-  const prBody = 
-`自动迁移自 ${url}
+  const prTitle = `feat: migrate ${url.split("/w/").pop().replace(".html", "")} from cppref [#${issue.number}]`;
+  const commitMessage = prTitle;
+  const prBody = `自动迁移自 ${url}
 
-[编辑 ${filePath.split("/").slice(-3).join("/")}](https://github.com/cppdoc-cc/cppdoc/edit/${branchName}/${filePath})
+[编辑 ${getRelativePath(url)}](https://github.com/cppdoc-cc/cppdoc/edit/${branchName}/${getRelativePath(url)})
 
 <small>Close #${issue.number}</small>
 `;
