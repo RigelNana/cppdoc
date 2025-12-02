@@ -69,7 +69,17 @@ async function fetchPageContent(
   const html = await response.text();
   const dom = new JSDOM(html);
   const contentElement = dom.window.document.querySelector("#mw-content-text");
-  contentElement?.querySelector(".t-navbar")?.remove();
+
+  const selectorsToRemove = [
+    ".t-navbar",
+    ".t-example-live-link",
+    "editsection",
+    "#toc",
+  ];
+  for (const selector of selectorsToRemove) {
+    const elements = contentElement?.querySelectorAll(selector);
+    elements?.forEach((el) => el.remove());
+  }
   const headingElement = dom.window.document.querySelector("#firstHeading");
   if (!contentElement) {
     throw new Error("Could not find #mw-content-text");
@@ -423,7 +433,13 @@ async function main() {
       console.log(`  写入 ${filePath}`);
       await writeMDXFile(filePath, mdx, title);
 
-      console.log(`  尝试构建...`);
+      console.log(`  重新格式化...`);
+      spawnSync(`npm`, ["run", "format"], {
+        stdio: "inherit",
+        shell: true,
+      });
+
+      console.log(`  构建...`);
       const res = spawnSync(`npm`, ["run", "build"], {
         stdio: "inherit",
         shell: true,
