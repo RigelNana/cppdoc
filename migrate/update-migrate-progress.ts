@@ -40,9 +40,9 @@ function generateUrls(entry: string): Omit<EntryStatus, 'entry' | 'migrated'> {
 function generateMarkdown(status: EntryStatus): string {
     const { entry, migrated, cpprefUrl, cppdocUrl, issueUrl } = status;
     if (migrated) {
-        return `| [x] | [cppref](${cpprefUrl}) | [cppdoc](${cppdocUrl}) | \`${entry}\` | `;
+        return `| <ul><li>- [x]</li></ul> | [cppref](${cpprefUrl}) | [cppdoc](${cppdocUrl}) | \`${entry}\` | `;
     } else {
-        return `| [ ] | [cppref](${cpprefUrl}) | [create](${issueUrl}) |  \`${entry}\` |`;
+        return `| <ul><li>- [ ]</li></ul> | [cppref](${cpprefUrl}) | [create](${issueUrl}) |  \`${entry}\` |`;
     }
 }
 
