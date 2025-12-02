@@ -111,15 +111,15 @@ async function convertToMDX(
       body: JSON.stringify({
         model: MODEL_NAME,
         messages: [
-          { role: "system", content: prompt },
+          { role: "user", content: prompt },
           {
             role: "user",
             content: `
-// Convert the following HTML content from cppreference.com into MDX format suitable for CppDoc.
-// Title: ${title}
 // URL: ${url}
 // HTML Content:
 ${html}
+
+// Converted MDX Content without using html tags, only using CppDoc components and markdown syntax:
 `,
           },
         ],
