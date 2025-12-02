@@ -209,7 +209,13 @@ async function createPullRequest(issue, filePath, url) {
   const branchName = `migrate/${issue.number}-${Date.now().toString(36)}`;
   const commitMessage = `Migrate ${url}`;
   const prTitle = `[#${issue.number}] Migrate ${url}`;
-  const prBody = `自动迁移自 ${url}\n\nclose #${issue.number}`;
+  const prBody = 
+`自动迁移自 ${url}
+
+[编辑 ${filePath.split("/").slice(-3).join("/")}](https://github.com/cppdoc-cc/cppdoc/edit/${branchName}/${filePath})
+
+<small>Close #${issue.number}</small>
+`;
 
   const { execSync } = await import("child_process");
   try {
