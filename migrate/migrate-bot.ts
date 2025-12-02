@@ -5,6 +5,7 @@ import path, { join } from "path";
 import { fileURLToPath } from "url";
 import { execSync, spawnSync } from "child_process";
 import { visualizeTextDiff } from "./text-diff-visualizer";
+import { getTextFromDOM } from "./text-from-element";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -88,7 +89,7 @@ async function fetchPageContent(
     html: contentElement.innerHTML,
     title: headingElement?.textContent?.trim() || "",
     url,
-    innerText: contentElement.textContent?.trim() || "",
+    innerText: getTextFromDOM(contentElement),
   };
 }
 
@@ -101,7 +102,7 @@ async function convertToMDX(
     "{{LLM_DOCS}}",
     await readFile(
       __dirname +
-        "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
+      "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
       "utf8"
     )
   );
@@ -305,13 +306,14 @@ async function createPullRequest(
     .then((data) => {
       const dom = new JSDOM(data);
       const contentElement = dom.window.document.querySelector("main");
-      const selectorsToRemove = ['.sl-anchor-link']
+      const selectorsToRemove = [".sl-anchor-link"];
       for (const selector of selectorsToRemove) {
         const elements = contentElement?.querySelectorAll(selector);
         elements?.forEach((el) => el.remove());
       }
 
-      return contentElement?.textContent?.trim() || "";
+      if (!contentElement) return "";
+      return getTextFromDOM(contentElement);
     })
     .catch(() => "");
 
@@ -453,11 +455,11 @@ async function main() {
       if (res.status !== 0) {
         throw new Error(
           "构建失败，可能生成的MDX有问题：" +
-            res.stderr?.toString() +
-            res.stdout?.toString() +
-            res.error?.toString() +
-            " exit code " +
-            res.status
+          res.stderr?.toString() +
+          res.stdout?.toString() +
+          res.error?.toString() +
+          " exit code " +
+          res.status
         );
       }
 
